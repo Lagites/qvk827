@@ -23,6 +23,11 @@ void print(Student* student, const string& pre_text = "")
     }
 }
 
+// Don't remove! Needed for tests.
+#ifndef POINTERS_TEST
+#define POINTERS_TEST
+// Don't remove! Needed for tests.
+
 // Main function (an example test case)
 int main()
 {
@@ -51,3 +56,7 @@ int main()
 
     return 0;
 }
+
+// Don't remove! Needed for tests.
+#endif //POINTERS_TEST
+// Don't remove! Needed for tests.
