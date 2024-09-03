@@ -4,8 +4,11 @@
 int main()
 {
     std::cout << "How many numbers would you like to have? ";
-
-    // Write your code here
+    int numbers;
+    std::cin >> numbers;
+    for(int i = 0; i < numbers; i++){
+        std::cout << i + 1 << std::endl;
+    }
 
     return 0;
 }
