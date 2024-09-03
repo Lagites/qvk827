@@ -5,8 +5,9 @@ using namespace std;
 int main()
 {
     cout << "Enter a temperature: ";
-
-    // Write your code here
+    double temp = 0;
+    cin >> temp;
+    cout << temp << " degrees Celsius is " <<  temp * 1.8 + 32 << " degrees Fahrenheit" << endl;
 
     return 0;
 }
