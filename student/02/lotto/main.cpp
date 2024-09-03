@@ -19,12 +19,12 @@ int main()
 
     if(allBalls < 1 || drawnBalls < 1){
         cout << "The number of balls must be a positive number." << endl ;
-        return EXIT_FAILURE;
+        return EXIT_SUCCESS;
     }
 
     if(drawnBalls > allBalls){
         cout << "The maximum number of drawn balls is the total amount of balls." << endl ;
-        return EXIT_FAILURE;
+        return EXIT_SUCCESS;
     }
 
     cout << "The probability of guessing all " << drawnBalls << " balls correctly is 1/" << calculateProbability(allBalls,drawnBalls) << endl ;
