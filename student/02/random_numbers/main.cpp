@@ -11,7 +11,8 @@ void produce_random_numbers(unsigned int lower, unsigned int upper, unsigned int
 
     char command = 'a';
     while(command != 'q'){
-        cout << distr(gen) << endl;
+        cout << endl;
+        cout << "Your drawn random number is " << distr(gen) << endl;
         cout << "Press q to quit or any other key to continue: ";
         cin >> command;
     }
