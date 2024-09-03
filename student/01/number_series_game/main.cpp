@@ -6,8 +6,11 @@ int main()
     std::cout << "How many numbers would you like to have? ";
     int numbers;
     std::cin >> numbers;
-    for(int i = 0; i < numbers; i++){
-        std::cout << i + 1 << std::endl;
+    for(int i = 1; i <= numbers; i++){
+        if(i % 3 == 0)
+            std::cout << "zip" << std::endl;
+        else
+            std::cout << i << std::endl;
     }
 
     return 0;
