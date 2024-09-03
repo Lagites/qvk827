@@ -13,20 +13,16 @@ int main()
 
     cout << "Enter the total number of lottery balls: ";
     cin >> allBalls;
-    if(allBalls < 1){
-        cout << "The number of balls must be a positive number." << endl ;
-        return EXIT_FAILURE;
-    }
 
     cout << "Enter the number of drawn balls: ";
     cin >> drawnBalls;
 
-    if(drawnBalls < 1){
+    if(allBalls < 1 || drawnBalls < 1){
         cout << "The number of balls must be a positive number." << endl ;
         return EXIT_FAILURE;
     }
 
-    if(drawnBalls >= allBalls){
+    if(drawnBalls > allBalls){
         cout << "The maximum number of drawn balls is the total amount of balls." << endl ;
         return EXIT_FAILURE;
     }
