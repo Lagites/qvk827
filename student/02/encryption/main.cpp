@@ -3,16 +3,14 @@
 using namespace std;
 
 int main()
-{
-    string keytest = "abcdefghijklmnopqrstuvwzyx";
-    string key;
-    string text;
-    string results = "";
+{    
+    string key; // = "abcdefghijklmnopqrstuvwzyx";
+    string text;   
     string::size_type asciiValuesAdded = 0;
+    int indexOfA = 97;
 
     cout << "Enter the encryption key: ";
-    //cin >> key;
-    key = keytest;
+    cin >> key;
 
     if(key.length() != 26){
         cout << "Error! The encryption key must contain 26 characters." << endl;
@@ -29,8 +27,6 @@ int main()
         asciiValuesAdded += asciiValue;
     }
 
-    cout << "Asciisize: " << asciiValuesAdded << endl;
-
     //Tarkistetaan onko kaikki ascii-merkit mukana vertailemalla saatua summaa ascii-kirjainten yhteenlaskettuun summaan.
     if(asciiValuesAdded != 2847){
         cout << "Error! The encryption key must contain all alphabets a-z." << endl;
@@ -39,5 +35,15 @@ int main()
 
     cout << "Enter the text to be encrypted: ";
     cin >> text;
+
+    for(string::size_type i = 0 ; i < text.length() ; i++){
+        char textChar = text.at(i);
+        int textAsciiValue = static_cast< int >(textChar);
+        char keyChar = key.at(textAsciiValue - indexOfA);
+        text.at(i) = keyChar;
+    }
+
+    cout << "Encrypted text: " << text << endl;
+
     return 0;
 }
