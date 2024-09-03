@@ -4,12 +4,11 @@ using namespace std;
 
 int main()
 {
-    string keycheck = "abcdefghijklmnopqrstuvwzyx";
     string keytest = "abcdefghijklmnopqrstuvwzyx";
     string key;
     string text;
     string results = "";
-    //string::size_type index = 0;
+    string::size_type asciiValuesAdded = 0;
 
     cout << "Enter the encryption key: ";
     //cin >> key;
@@ -27,12 +26,15 @@ int main()
             cout << "Error! The encryption key must contain only lower case characters." << endl;
             return EXIT_FAILURE;
         }
-        string::size_type keyIndex = keycheck.find(keychar);
-        if(keyIndex == string::npos){
-            cout << "Error! The encryption key must contain all alphabets a-z." << endl;
-            return EXIT_FAILURE;
-        }
-        keycheck.erase(keyIndex,1);
+        asciiValuesAdded += asciiValue;
+    }
+
+    cout << "Asciisize: " << asciiValuesAdded << endl;
+
+    //Tarkistetaan onko kaikki ascii-merkit mukana vertailemalla saatua summaa ascii-kirjainten yhteenlaskettuun summaan.
+    if(asciiValuesAdded != 2847){
+        cout << "Error! The encryption key must contain all alphabets a-z." << endl;
+        return EXIT_FAILURE;
     }
 
     cout << "Enter the text to be encrypted: ";
