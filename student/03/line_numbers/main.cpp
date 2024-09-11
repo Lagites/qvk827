@@ -15,11 +15,16 @@ int main()
 
     ifstream reader(inputFile);
     ofstream writer(outputFile);
-    if(!reader)
+    if(!reader){
         cout << "Error! The file " << inputFile << " cannot be opened." << endl;
+        return EXIT_FAILURE;
+    }
+
     else{
-        if(!writer)
+        if(!writer){
             cout << "Error! The file " << outputFile << " cannot be opened." << endl;
+            return EXIT_FAILURE;
+        }
         else{
             string line;
             while(getline(reader,line)){
