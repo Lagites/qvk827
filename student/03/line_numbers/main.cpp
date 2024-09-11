@@ -27,8 +27,10 @@ int main()
         }
         else{
             string line;
+            int i = 1;
             while(getline(reader,line)){
-                writer << line << endl;
+                writer << i << " " << line << endl;
+                i++;
             }
         }
 
@@ -36,5 +38,5 @@ int main()
     reader.close();
     writer.close();
 
-    return 0;
+    return EXIT_SUCCESS;
 }
