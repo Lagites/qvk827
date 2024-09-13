@@ -17,7 +17,7 @@ std::vector< std::string > split(std::string& line, char separator, bool ignoreE
         }
         else{
             std::string subStr = line.substr(prevPos,line.size() - prevPos);
-            if(subStr.size() > 0 )
+            if(!ignoreEmpty || subStr.size() > 0 )
                 result.push_back(subStr);
             break;
         }
