@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <vector>
+#include <cmath>
 
 
 // Prints the elements in the parameter vector ints.
@@ -61,15 +62,18 @@ bool is_geometric_series(std::vector< int >& ints)
 {
     if(ints.size() < 2)
         return true;
-    int interval = ints.at(1) - ints.at(0);
-    int sum = ints.at(0);
-
+    int a = ints.at(0);
+    if(a == 0 || ints.at(1) == 0)
+        return false;
+    int r = ints.at(1) / a;
+    int seq = 0;
     for(int i : ints){
-        if (i != sum)
+        if (i != a  * pow(r,seq))
             return false;
-        sum = sum * interval;
+        seq++;
     }
 
+    std::cout << std::endl;
     return true;
 }
 
