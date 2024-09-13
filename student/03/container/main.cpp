@@ -72,8 +72,6 @@ bool is_geometric_series(std::vector< int >& ints)
             return false;
         seq++;
     }
-
-    std::cout << std::endl;
     return true;
 }
 
