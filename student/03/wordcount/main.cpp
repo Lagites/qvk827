@@ -1,18 +1,28 @@
 #include <iostream>
 #include <fstream>
 #include <map>
+#include <set>
 #include <string>
 
 using namespace std;
 
-void insertWord(map<string,int>& words, string word){
-    map<string,int>::iterator iter;
+struct lineData{
+    int qty;
+    set<int> lines;
+};
+
+void insertWord(map<string,lineData>& words, string word, int row){
+    map<string,lineData>::iterator iter;
     iter = words.find(word);
     if(iter == words.end()){
-        words.insert({word, 1});
+        words.insert({word, lineData{1,{row}}});
     }
     else{
-        ++words.at(word);
+        if(iter->second.lines.find(row) == iter->second.lines.end()){
+            iter->second.qty++;
+            iter->second.lines.insert(row);
+        }
+
     }
 }
 
@@ -29,7 +39,8 @@ int main()
     }
 
     string line;
-    map<string,int> words = {};
+    map<string,lineData> words = {};
+    int row = 1;
 
     while(getline(reader,line)){
         string::size_type index = 0;
@@ -39,23 +50,29 @@ int main()
             index  = line.find(" ",index);
             if(index != std::string::npos){
                 string subStr = line.substr(prevPos,index - prevPos);
-                insertWord(words,subStr);
+                insertWord(words,subStr,row);
                 index++;
                 prevPos = index;
             }
             else{
                 std::string subStr = line.substr(prevPos,line.size() - prevPos);
                 if(subStr.length() > 0)
-                    insertWord(words,subStr);
+                    insertWord(words,subStr,row);
                 break;
             }
         }
+        row++;
     }
 
-    map<string,int>::iterator iter;
+    map<string,lineData>::iterator iter;
     iter = words.begin();
     while(iter != words.end()){
-        cout << iter->first << ": " << iter->second << endl;
+        string lines = "";
+        for (int i: iter->second.lines) {
+           lines.append(" " + to_string(i) + ",");
+        }
+        lines.pop_back();
+        cout << iter->first << " " << iter->second.qty << ":" << lines <<  endl;
         iter++;
     }
 
