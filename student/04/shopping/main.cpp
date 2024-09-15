@@ -225,6 +225,9 @@ void printStores(map<string,map<string,Shop>> chains, string request)
             shopIter++;
         }
     }
+    else{
+        cout << "Error: unknown chain name" << endl;
+    }
 }
 
 /**
@@ -246,6 +249,12 @@ void printSelection(map<string,map<string,Shop>> chains, string chain, string sh
                 productIter++;
             }
         }
+        else{
+            cout << "Error: unknown store" << endl;
+        }
+    }
+    else{
+        cout << "Error: unknown chain name" << endl;
     }
 }
 
@@ -359,20 +368,43 @@ int main()
             break;
         }
 
-        if(lines.at(0).compare("chains") == 0){
+        else if(lines.at(0).compare("chains") == 0){
+            if(lines.size() != 1){
+                cout << "Error: error in command " << lines.at(0) << endl;
+                continue;
+            }
             printChains(chains);
         }
-        if(lines.at(0).compare("stores") == 0){
+        else if(lines.at(0).compare("stores") == 0){
+            if(lines.size() != 2){
+                cout << "Error: error in command " << lines.at(0) << endl;
+                continue;
+            }
             printStores(chains,lines.at(1));
         }
-        if(lines.at(0).compare("selection") == 0){
+        else if(lines.at(0).compare("selection") == 0){
+            if(lines.size() != 3){
+                cout << "Error: error in command " << lines.at(0) << endl;
+                continue;
+            }
             printSelection(chains,lines.at(1),lines.at(2));
         }
-        if(lines.at(0).compare("cheapest") == 0){
+        else if(lines.at(0).compare("cheapest") == 0){
+            if(lines.size() != 2){
+                cout << "Error: error in command " << lines.at(0) << endl;
+                continue;
+            }
             printCheapest(chains,lines.at(1));
         }
-        if(lines.at(0).compare("products") == 0){
+        else if(lines.at(0).compare("products") == 0){
+            if(lines.size() != 1){
+                cout << "Error: error in command " << lines.at(0) << endl;
+                continue;
+            }
             printProducts(chains);
+        }
+        else{
+            cout << "Error: unknown command: " << command << endl;
         }
     }
 
