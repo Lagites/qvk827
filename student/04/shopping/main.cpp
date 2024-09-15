@@ -281,11 +281,11 @@ void printCheapest(map<string,map<string,Shop>> chains, string product)
                 if(productIter->second.price < 0)
                     break;
                 if(comparePrice(productIter->second.price, price) == 0)
-                    shops.insert(shopIter->first);
+                    shops.insert(chainIter->first + " " + shopIter->first);
                 else if(comparePrice(productIter->second.price, price) < 0){
                     price = productIter->second.price;
                     shops.clear();
-                    shops.insert(shopIter->first);
+                    shops.insert(chainIter->first + " " + shopIter->first);
                 }
             }
             shopIter++;
@@ -297,7 +297,7 @@ void printCheapest(map<string,map<string,Shop>> chains, string product)
     else if(productFound && shops.size() == 0)
         cout << "The product is temporarily out of stock everywhere" << endl;
     else{
-        cout << getprice(price) << endl;
+        cout << getprice(price) << " euros" << endl;
         for(string shop : shops){
            cout << shop << endl;
         }
@@ -340,7 +340,7 @@ int main()
 
     ifstream reader(inputFile);
     if(!reader){
-        cout << "Error! The file " << inputFile << " cannot be opened" << endl;
+        cout << "Error: the input file cannot be opened" << endl;
         return EXIT_FAILURE;
     }
 
