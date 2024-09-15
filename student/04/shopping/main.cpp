@@ -295,6 +295,33 @@ void printCheapest(map<string,map<string,Shop>> chains, string product)
     }
 }
 
+/**
+ * Tulostaa näytölle kaikki listatut tuotteet joka kaupasta.
+ *
+ * @param chains Tietue, josta kauppaketjut luetaan
+ */
+void printProducts(map<string,map<string,Shop>> chains)
+{
+    set<string> products = {};
+    map<string,map<string,Shop>>::iterator chainIter = chains.begin();
+    while(chainIter  != chains.end()){
+        map<string,Shop>::iterator shopIter = chainIter->second.begin();
+        while(shopIter  != chainIter->second.end()){
+            map<string,Product>::iterator productIter = shopIter->second.products.begin();
+            while(productIter != shopIter->second.products.end()){
+                if(products.find(productIter->first) == products.end())
+                    products.insert(productIter->first);
+                productIter++;
+            }
+            shopIter++;
+        }
+        chainIter++;
+    }
+
+    for(string product : products){
+       cout << product << endl;
+    }
+}
 
 int main()
 {
@@ -345,7 +372,7 @@ int main()
             printCheapest(chains,lines.at(1));
         }
         if(lines.at(0).compare("products") == 0){
-            //TODO: products
+            printProducts(chains);
         }
     }
 
