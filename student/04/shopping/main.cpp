@@ -4,6 +4,8 @@
 #include <set>
 #include <vector>
 #include <string>
+#include <sstream>
+#include <iomanip>
 
 /* Kauppaketjut
  *
@@ -151,11 +153,32 @@ bool readRowData(map<string,map<string,Shop>>& chains, string line)
 }
 
 /**
+ * Palauttaa hinnan kahden desimaalin tarkkuudella tai 'out of stock' jos hinta on negatiivinen
+ *
+ * @param price hinta numerona
+ * @return hinta stringinä
+ */
+string getprice(double price)
+{
+    string priceStr;
+    if(price < 0){
+        priceStr = "out of stock";
+    }
+    else{
+        stringstream ss;
+        ss << fixed << setprecision(2) << price;
+        priceStr = ss.str();
+    }
+    return priceStr;
+}
+
+
+/**
  * Tulostaa näytölle tunnetut kauppaketjut
  *
  * @param chains Tietue, josta kauppaketjut luetaan
  */
-void printChains(map<string,map<string,Shop>>& chains)
+void printChains(map<string,map<string,Shop>> chains)
 {
     map<string,map<string,Shop>>::iterator iter = chains.begin();
     while(iter  != chains.end()){
@@ -170,7 +193,7 @@ void printChains(map<string,map<string,Shop>>& chains)
  * @param chains Tietue, josta kauppaketjut luetaan
  * @param request Haluttu kauppaketju
  */
-void printStores(map<string,map<string,Shop>>& chains, string request)
+void printStores(map<string,map<string,Shop>> chains, string request)
 {
     map<string,map<string,Shop>>::iterator chainIter = chains.find(request);
     if(chainIter != chains.end()){
@@ -189,7 +212,7 @@ void printStores(map<string,map<string,Shop>>& chains, string request)
  * @param chain Kauppaketju, josta kauppa etsitään
  * @param chain Kauppa, jonka valikoima tulostetaan
  */
-void printSelection(map<string,map<string,Shop>>& chains, string chain, string shop)
+void printSelection(map<string,map<string,Shop>> chains, string chain, string shop)
 {
     map<string,map<string,Shop>>::iterator chainIter = chains.find(chain);
     if(chainIter != chains.end()){
@@ -197,13 +220,12 @@ void printSelection(map<string,map<string,Shop>>& chains, string chain, string s
         if(shopIter  != chainIter->second.end()){
             map<string,Product>::iterator productIter = shopIter->second.products.begin();
             while(productIter != shopIter->second.products.end()){
-                cout << productIter->first << endl;
+                cout << productIter->first << " "  << getprice(productIter->second.price) << endl;
                 productIter++;
             }
         }
     }
 }
-
 
 int main()
 {
@@ -228,6 +250,7 @@ int main()
     }
     reader.close();
 
+    printSelection(chains,"Prisma","Kaleva");
     while(true){
         cout << "> ";
         string command;
