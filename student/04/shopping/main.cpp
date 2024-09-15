@@ -182,6 +182,29 @@ void printStores(map<string,map<string,Shop>>& chains, string request)
     }
 }
 
+/**
+ * Tulostaa näytölle kauppaketjun kaupat
+ *
+ * @param chains Tietue, josta kauppaketjut luetaan
+ * @param chain Kauppaketju, josta kauppa etsitään
+ * @param chain Kauppa, jonka valikoima tulostetaan
+ */
+void printSelection(map<string,map<string,Shop>>& chains, string chain, string shop)
+{
+    map<string,map<string,Shop>>::iterator chainIter = chains.find(chain);
+    if(chainIter != chains.end()){
+        map<string,Shop>::iterator shopIter = chainIter->second.find(shop);
+        if(shopIter  != chainIter->second.end()){
+            map<string,Product>::iterator productIter = shopIter->second.products.begin();
+            while(productIter != shopIter->second.products.end()){
+                cout << productIter->first << endl;
+                productIter++;
+            }
+        }
+    }
+}
+
+
 int main()
 {
     string inputFile;
@@ -225,7 +248,7 @@ int main()
             printStores(chains,lines.at(1));
         }
         if(lines.at(0).compare("selection") == 0){
-            //TODO: Selection
+            printSelection(chains,lines.at(1),lines.at(2));
         }
         if(lines.at(0).compare("cheapest") == 0){
             //TODO: cheapest
