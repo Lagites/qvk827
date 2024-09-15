@@ -319,9 +319,6 @@ int main()
     }
     reader.close();
 
-    printCheapest(chains,"sausage");
-    printCheapest(chains,"paska");
-    printCheapest(chains,"chocolate");
     while(true){
         cout << "> ";
         string command;
