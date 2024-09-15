@@ -172,6 +172,28 @@ string getprice(double price)
     return priceStr;
 }
 
+/**
+ * Vertailee kahta hintaa ja palauttaa vertailuluvun, out of stock on aina suurempi kuin muut luvut
+ *
+ * @param price1 Vertailtava hinta
+ * @param price2 Verrattava hinta
+ * @return -1 = ensimmäinen hinta on pienempi, 0 = hinnat ovat yhtä suuria, 1 = ensimmäinen hinta on suurempi
+ */
+int comparePrice(double price1, double price2)
+{
+    if(price1 == price2)
+        return 0;
+    if(price1 < 0 && price2 >= 0)
+        return 1;
+    if(price1 >= 0 && price2 < 0)
+        return -1;
+    if(price1 > price2)
+        return 1;
+    if(price1 < price2)
+        return -1;
+    return 0;
+}
+
 
 /**
  * Tulostaa näytölle tunnetut kauppaketjut
@@ -227,6 +249,53 @@ void printSelection(map<string,map<string,Shop>> chains, string chain, string sh
     }
 }
 
+/**
+ * Tulostaa näytölle tuotteen halvimman hinnan ja kaupan mistä se löytyy.
+ * Tulostaa viestin jos tuote on tuntematon tai loppu
+ *
+ * @param chains Tietue, josta kauppaketjut luetaan
+ * @param chain product, jota etsitään
+ */
+void printCheapest(map<string,map<string,Shop>> chains, string product)
+{
+    double price = -1;
+    bool productFound = false;
+    set<string> shops = {};
+    map<string,map<string,Shop>>::iterator chainIter = chains.begin();
+    while(chainIter  != chains.end()){
+        map<string,Shop>::iterator shopIter = chainIter->second.begin();
+        while(shopIter  != chainIter->second.end()){
+            map<string,Product>::iterator productIter = shopIter->second.products.find(product);
+            if(productIter != shopIter->second.products.end()){
+                if(!productFound)
+                    productFound = true;
+                if(productIter->second.price < 0)
+                    break;
+                if(comparePrice(productIter->second.price, price) == 0)
+                    shops.insert(shopIter->first);
+                else if(comparePrice(productIter->second.price, price) < 0){
+                    price = productIter->second.price;
+                    shops.clear();
+                    shops.insert(shopIter->first);
+                }
+            }
+            shopIter++;
+        }
+        chainIter++;
+    }
+    if(!productFound)
+        cout << "The product is not part of product selection" << endl;
+    else if(productFound && shops.size() == 0)
+        cout << "The product is temporarily out of stock everywhere" << endl;
+    else{
+        cout << getprice(price) << endl;
+        for(string shop : shops){
+           cout << shop << endl;
+        }
+    }
+}
+
+
 int main()
 {
     string inputFile;
@@ -250,7 +319,9 @@ int main()
     }
     reader.close();
 
-    printSelection(chains,"Prisma","Kaleva");
+    printCheapest(chains,"sausage");
+    printCheapest(chains,"paska");
+    printCheapest(chains,"chocolate");
     while(true){
         cout << "> ";
         string command;
@@ -274,7 +345,7 @@ int main()
             printSelection(chains,lines.at(1),lines.at(2));
         }
         if(lines.at(0).compare("cheapest") == 0){
-            //TODO: cheapest
+            printCheapest(chains,lines.at(1));
         }
         if(lines.at(0).compare("products") == 0){
             //TODO: products
