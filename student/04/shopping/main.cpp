@@ -58,7 +58,7 @@ struct Shop{
  * @param separator Erotinmerkki
  * @return Lista erotelluista merkkijonoista
  */
-std::vector< std::string > split(std::string& line, char separator, bool ignoreEmpty = false)
+std::vector< std::string > split(std::string& line, char separator)
 {
     std::vector< std::string > result = { };
     std::string::size_type index = 0;
@@ -68,12 +68,12 @@ std::vector< std::string > split(std::string& line, char separator, bool ignoreE
         if(index != std::string::npos){
             std::string subStr = line.substr(prevPos,index - prevPos);
             //std::cout << "index: " << index << " subStr " << subStr << " Size:" << subStr.size() <<  std::endl;
-            if(!ignoreEmpty || subStr.size() > 0 )
+            if(subStr.size() > 0 )
                 result.push_back(subStr);
         }
         else{
             std::string subStr = line.substr(prevPos,line.size() - prevPos);
-            if(!ignoreEmpty || subStr.size() > 0 )
+            if(subStr.size() > 0 )
                 result.push_back(subStr);
             break;
         }
@@ -93,7 +93,8 @@ std::vector< std::string > split(std::string& line, char separator, bool ignoreE
  */
 bool readRowData(map<string,map<string,Shop>>& chains, string line)
 {
-    vector<string> lines = split(line, SEPARATOR, true);
+    vector<string> lines = split(line, SEPARATOR);
+    //Jos rivi ei sisällä oikeaa määrää kenttiä, palautetaan virhe
     if(lines.size() != 4){
         return false;
     }
@@ -101,24 +102,29 @@ bool readRowData(map<string,map<string,Shop>>& chains, string line)
     string chain = lines.at(0);
     string shop = lines.at(1);
     string product = lines.at(2);
-    string price = lines.at(3);
+    string price = lines.at(3);    
+
+    //Jos jokin arvo on tyhjä, palautetaan virhe
+    if(chain.length() == 0 || shop.length() == 0 || product.length() == 0 || price.length() == 0){
+        return false;
+    }
+
     double priceNum;
     if (price.compare(OUT_OF_STOCK) == 0){
-        priceNum = 0;
+        priceNum = -1;
     }
     else{
         priceNum = stod(price);
     }
 
-    if(chain.length() == 0 || shop.length() == 0 || product.length() == 0 || price.length() == 0){
-        return false;
-    }
-
+    //Etsitään löytyykö kauppaketjua jo tietueesta. Jos löytyy, etsitään kauppa, muuten lisätään uusi kauppaketju, kauppa ja tuote
     map<string,map<string,Shop>>::iterator chainIter = chains.find(chain);
     if(chainIter  != chains.end()){
+        //Etsitään löytyykö kauppaa jo tietueesta. Jos löytyy, etsitään tuote, muuten lisätään uusi kauppa ja tuote
         map<string,Shop>::iterator shopIter = chainIter ->second.find(shop);
         if(shopIter != chainIter->second.end()){
-            auto productIter = shopIter->second.products.find(product);
+            //Etsitään löytyykö tuotetta jo tietueesta. Jos löytyy, päivitetään hinta, muuten lisätään uusi tuote
+            map<string,Product>::iterator productIter = shopIter->second.products.find(product);
             if(productIter != shopIter->second.products.end()){
                 productIter->second.price = priceNum;
             }
@@ -144,11 +150,43 @@ bool readRowData(map<string,map<string,Shop>>& chains, string line)
     return true;
 }
 
+/**
+ * Tulostaa näytölle tunnetut kauppaketjut
+ *
+ * @param chains Tietue, josta kauppaketjut luetaan
+ */
+void printChains(map<string,map<string,Shop>>& chains)
+{
+    map<string,map<string,Shop>>::iterator iter = chains.begin();
+    while(iter  != chains.end()){
+        cout << iter->first << endl;
+        iter++;
+    }
+}
+
+/**
+ * Tulostaa näytölle kauppaketjun kaupat
+ *
+ * @param chains Tietue, josta kauppaketjut luetaan
+ * @param request Haluttu kauppaketju
+ */
+void printStores(map<string,map<string,Shop>>& chains, string request)
+{
+    map<string,map<string,Shop>>::iterator chainIter = chains.find(request);
+    if(chainIter != chains.end()){
+        map<string,Shop>::iterator shopIter = chainIter->second.begin();
+        while(shopIter  != chainIter->second.end()){
+            cout << shopIter->first << endl;
+            shopIter++;
+        }
+    }
+}
+
 int main()
 {
     string inputFile;
     cout << "Input file: ";
-    cin >> inputFile;
+    getline(std::cin, inputFile);
 
     ifstream reader(inputFile);
     if(!reader){
@@ -165,6 +203,38 @@ int main()
             return EXIT_FAILURE;
         }
     }
+    reader.close();
+
+    while(true){
+        cout << "> ";
+        string command;
+        getline(std::cin, command);
+
+        vector<string> lines = split(command, ' ');
+        if(lines.size() == 0)
+            continue;
+
+        if(lines.at(0).compare("quit") == 0){
+            break;
+        }
+
+        if(lines.at(0).compare("chains") == 0){
+            printChains(chains);
+        }
+        if(lines.at(0).compare("stores") == 0){
+            printStores(chains,lines.at(1));
+        }
+        if(lines.at(0).compare("selection") == 0){
+            //TODO: Selection
+        }
+        if(lines.at(0).compare("cheapest") == 0){
+            //TODO: cheapest
+        }
+        if(lines.at(0).compare("products") == 0){
+            //TODO: products
+        }
+    }
+
 
     return EXIT_SUCCESS;
 }
