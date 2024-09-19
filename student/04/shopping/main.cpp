@@ -23,7 +23,7 @@
  * ja että parametrit (kauppaketjun nimi, kaupan sijainti,  tuotteen nimi)
  * löytyvät tietorakenteesta.
  *
- *   Ohjelman toiminnan voi lopettaa komennolla quit.
+ * Ohjelman toiminnan voi lopettaa komennolla quit.
  *
  * Ohjelman kirjoittaja
  * Nimi: Jukka Välimäki
@@ -33,9 +33,10 @@
  *
  * Huomioita ohjelmasta ja sen toteutuksesta (jos sellaisia on):
  * Ohjelma käyttää std-kirjaston map-rakenteita tietojen säilytykseen ja hakemiseen.
+ * Map järjestää tietueet iteroidessa automaattisesti aakkosjärjestykseen ja tekee hakemisesta helpompaa
  * Chains-sisältää avainparin kauppaketjun nimi ja arvona map-rakenteen kaupoista.
- * Kaupat sisältävät map-rakenteella listan tuotteista.
- *
+ * Kauppojen ei tarvitsisi olla struct-rakenteessa, koska ne sisältävät vain map-tietueen tuotteista,
+ * mutta on nätimpi näin.
  *
  * */
 
@@ -44,6 +45,8 @@ using namespace std;
 const char SEPARATOR = ';';
 const string OUT_OF_STOCK = "out-of-stock";
 
+//product_name on mukana structissa erityisvaatimusten johdosta, mutta sama tieto on map-rakenteen
+//avaimena niin ohjelmassa sitä käytetään ainoastaan tietojen tulostusfunkioissa.
 struct Product {
     string product_name;
     double price;
@@ -113,7 +116,7 @@ bool readRowData(map<string,map<string,Shop>>& chains, string line)
 
     double priceNum;
     if (price.compare(OUT_OF_STOCK) == 0){
-        priceNum = -1;
+        priceNum = __DBL_MAX__;
     }
     else{
         priceNum = stod(price);
@@ -153,7 +156,7 @@ bool readRowData(map<string,map<string,Shop>>& chains, string line)
 }
 
 /**
- * Palauttaa hinnan kahden desimaalin tarkkuudella tai 'out of stock' jos hinta on negatiivinen
+ * Palauttaa hinnan kahden desimaalin tarkkuudella tai 'out of stock' jos hinta on doublen maksimiarvo
  *
  * @param price hinta numerona
  * @return hinta stringinä
@@ -161,7 +164,7 @@ bool readRowData(map<string,map<string,Shop>>& chains, string line)
 string getprice(double price)
 {
     string priceStr;
-    if(price < 0){
+    if(price == __DBL_MAX__){
         priceStr = "out of stock";
     }
     else{
@@ -171,29 +174,6 @@ string getprice(double price)
     }
     return priceStr;
 }
-
-/**
- * Vertailee kahta hintaa ja palauttaa vertailuluvun, out of stock on aina suurempi kuin muut luvut
- *
- * @param price1 Vertailtava hinta
- * @param price2 Verrattava hinta
- * @return -1 = ensimmäinen hinta on pienempi, 0 = hinnat ovat yhtä suuria, 1 = ensimmäinen hinta on suurempi
- */
-int comparePrice(double price1, double price2)
-{
-    if(price1 == price2)
-        return 0;
-    if(price1 < 0 && price2 >= 0)
-        return 1;
-    if(price1 >= 0 && price2 < 0)
-        return -1;
-    if(price1 > price2)
-        return 1;
-    if(price1 < price2)
-        return -1;
-    return 0;
-}
-
 
 /**
  * Tulostaa näytölle tunnetut kauppaketjut
@@ -213,11 +193,11 @@ void printChains(map<string,map<string,Shop>> chains)
  * Tulostaa näytölle kauppaketjun kaupat
  *
  * @param chains Tietue, josta kauppaketjut luetaan
- * @param request Haluttu kauppaketju
+ * @param chain Haluttu kauppaketju
  */
-void printStores(map<string,map<string,Shop>> chains, string request)
+void printStores(map<string,map<string,Shop>> chains, string chain)
 {
-    map<string,map<string,Shop>>::iterator chainIter = chains.find(request);
+    map<string,map<string,Shop>>::iterator chainIter = chains.find(chain);
     if(chainIter != chains.end()){
         map<string,Shop>::iterator shopIter = chainIter->second.begin();
         while(shopIter  != chainIter->second.end()){
@@ -235,7 +215,7 @@ void printStores(map<string,map<string,Shop>> chains, string request)
  *
  * @param chains Tietue, josta kauppaketjut luetaan
  * @param chain Kauppaketju, josta kauppa etsitään
- * @param chain Kauppa, jonka valikoima tulostetaan
+ * @param shop Kauppa, jonka valikoima tulostetaan
  */
 void printSelection(map<string,map<string,Shop>> chains, string chain, string shop)
 {
@@ -245,7 +225,7 @@ void printSelection(map<string,map<string,Shop>> chains, string chain, string sh
         if(shopIter  != chainIter->second.end()){
             map<string,Product>::iterator productIter = shopIter->second.products.begin();
             while(productIter != shopIter->second.products.end()){
-                cout << productIter->first << " "  << getprice(productIter->second.price) << endl;
+                cout << productIter->second.product_name << " "  << getprice(productIter->second.price) << endl;
                 productIter++;
             }
         }
@@ -263,11 +243,11 @@ void printSelection(map<string,map<string,Shop>> chains, string chain, string sh
  * Tulostaa viestin jos tuote on tuntematon tai loppu
  *
  * @param chains Tietue, josta kauppaketjut luetaan
- * @param chain product, jota etsitään
+ * @param product Tuote, jota etsitään
  */
 void printCheapest(map<string,map<string,Shop>> chains, string product)
 {
-    double price = -1;
+    double price = __DBL_MAX__;
     bool productFound = false;
     set<string> shops = {};
     map<string,map<string,Shop>>::iterator chainIter = chains.begin();
@@ -278,11 +258,11 @@ void printCheapest(map<string,map<string,Shop>> chains, string product)
             if(productIter != shopIter->second.products.end()){
                 if(!productFound)
                     productFound = true;
-                if(productIter->second.price < 0)
+                if(productIter->second.price == __DBL_MAX__)
                     break;
-                if(comparePrice(productIter->second.price, price) == 0)
+                if(productIter->second.price == price)
                     shops.insert(chainIter->first + " " + shopIter->first);
-                else if(comparePrice(productIter->second.price, price) < 0){
+                else if(productIter->second.price < price){
                     price = productIter->second.price;
                     shops.clear();
                     shops.insert(chainIter->first + " " + shopIter->first);
@@ -319,7 +299,7 @@ void printProducts(map<string,map<string,Shop>> chains)
             map<string,Product>::iterator productIter = shopIter->second.products.begin();
             while(productIter != shopIter->second.products.end()){
                 if(products.find(productIter->first) == products.end())
-                    products.insert(productIter->first);
+                    products.insert(productIter->second.product_name);
                 productIter++;
             }
             shopIter++;
