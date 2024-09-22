@@ -7,9 +7,14 @@ class Account
 {
 public:
     // Constructor
-    Account(const std::string& owner, bool has_credit = false);
+    Account(const std::string& owner, bool has_credit = false);    
 
     // More methods
+    void print() const;
+    void set_credit_limit(int money);
+    void save_money(int money);
+    void take_money(int money);
+    void transfer_to(Account& account, int money);
 
 private:
     // Generates IBAN (based on running_number_ below).
@@ -24,6 +29,7 @@ private:
     static int running_number_;
 
     // More attributes/methods
+    std::string iban_;
 };
 
 #endif // ACCOUNT_HH

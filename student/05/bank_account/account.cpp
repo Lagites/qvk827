@@ -26,3 +26,23 @@ void Account::generate_iban()
     iban_ = "FI00 1234 ";
     iban_.append(suffix);
 }
+
+void Account::print() const{
+
+}
+
+void Account::set_credit_limit(int money){
+
+}
+
+void Account::save_money(int money){
+
+}
+
+void Account::take_money(int money){
+
+}
+
+void Account::transfer_to(Account& account, int money){
+
+}
