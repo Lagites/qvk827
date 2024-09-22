@@ -11,10 +11,11 @@ public:
 
     // More methods
     void print() const;
-    void set_credit_limit(int money);
-    void save_money(int money);
-    void take_money(int money);
-    void transfer_to(Account& account, int money);
+    std::string getIban() const;
+    bool set_credit_limit(int money);
+    bool save_money(int money);
+    bool take_money(int money);
+    bool transfer_to(Account& account, int money);
 
 private:
     // Generates IBAN (based on running_number_ below).
@@ -29,7 +30,11 @@ private:
     static int running_number_;
 
     // More attributes/methods
+    std::string owner_;
     std::string iban_;
+    int money_;
+    bool has_credit_;
+    int credit_limit_;
 };
 
 #endif // ACCOUNT_HH
