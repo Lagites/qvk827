@@ -89,6 +89,7 @@ void countPersons(std::vector<Person>& persons, std::string target, int& qty){
 
 int depthPersons(std::vector<Person>& persons, std::string target, int depth){
     std::vector<Person>::iterator iter = persons.begin();
+    int tempDepth = depth;
     if(target.compare("") == 0 && iter != persons.end())
         depth++;
     while(iter != persons.end()){
@@ -99,13 +100,15 @@ int depthPersons(std::vector<Person>& persons, std::string target, int depth){
         }
         else if(target.compare("") == 0){
             int newDepth = depthPersons(iter->persons,"",depth);
-            if(newDepth > depth)
-                depth = newDepth;
+            if(newDepth > tempDepth)
+                tempDepth = newDepth;
         }
         else
             depth = depthPersons(iter->persons,target,depth);
         iter++;
     }
+    if(tempDepth > depth)
+        return tempDepth;
     return depth;
 }
 
