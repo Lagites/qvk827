@@ -18,7 +18,7 @@ private:
 
     std::string author_;
     std::string name_;
-    bool loaned;
+    bool loaned_;
     Date loanDate_;
     Date returnDate_;
 };
