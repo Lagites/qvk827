@@ -7,10 +7,10 @@ class Player
 public:
     Player();
     Player(std::string name);
-    std::string get_name();
-    int get_points();
+    std::string get_name() const;
+    int get_points() const;
     void add_points(int points);
-    bool has_won();
+    bool has_won() const;
 private:
     std::string name_;
     int points_;

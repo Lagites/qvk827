@@ -10,10 +10,10 @@ Player::Player(std::string name)
     name_ = name;
 }
 
-std::string Player::get_name(){
+std::string Player::get_name() const {
     return name_;
 }
-int Player::get_points(){
+int Player::get_points() const {
     return points_;
 }
 
@@ -23,6 +23,6 @@ void Player::add_points(int points){
         points_ = 25;
 }
 
-bool Player::has_won(){
+bool Player::has_won() const {
     return points_ == 50;
 }
