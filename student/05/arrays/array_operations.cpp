@@ -3,7 +3,7 @@
 
 int greatest_v1(int *itemptr, int size)
 {
-    int greatest = 0;
+    int greatest = INT32_MIN;
     for(int i = 0 ; i < size ; i++){        
         if(*itemptr > greatest)
             greatest = *itemptr;
@@ -15,7 +15,7 @@ int greatest_v1(int *itemptr, int size)
 
 int greatest_v2(int *itemptr, int *endptr)
 {
-    int greatest = 0;
+    int greatest = INT32_MIN;
     while(itemptr != endptr){
         if(*itemptr > greatest)
             greatest = *itemptr;
@@ -41,6 +41,5 @@ void reverse(int *leftptr, int *rightptr)
         *leftptr = *rightptr;
         *rightptr = temp;
         leftptr++;
-        std::cout << "leftpt " << leftptr << " right " << rightptr << std::endl;
     }
 }
