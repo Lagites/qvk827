@@ -122,8 +122,7 @@ bool is_valid_phone_number(const string number) {
 // Main function: reads user-given commands and makes actions
 // specific for each command
 int main() {
-    string file_name = "";
-    string file_name2 = "data2.txt";
+    string file_name = "";    
     cout << "Student file: ";
     getline(cin, file_name);
 
@@ -186,10 +185,11 @@ int main() {
                  continue;
              }
              iter->second.get()->phone_number = line;
+             cout << endl;
 
         // Quitting
         } else if( command == "Q" or command == "q" ) {
-            save_data(file_name2, student_numbers);
+            save_data(file_name, user_ids);
             return EXIT_SUCCESS;
 
         // Unknown command
