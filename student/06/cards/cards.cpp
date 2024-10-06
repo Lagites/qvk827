@@ -56,6 +56,8 @@ void Cards::print_from_bottom_to_top(std::ostream &s)
 
 bool Cards::top_to_bottom()
 {
+    if(top_ == nullptr || top_->next == nullptr)
+        return false;
     shared_ptr<Card_data> next_top = top_->next;
     shared_ptr<Card_data> running_ptr = top_;
     while ( running_ptr->next != nullptr ) {
