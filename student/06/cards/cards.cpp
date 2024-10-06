@@ -51,7 +51,8 @@ void Cards::print_from_top_to_bottom(std::ostream &s)
 
 void Cards::print_from_bottom_to_top(std::ostream &s)
 {
-    s << endl;
+    shared_ptr<Card_data> running_ptr = top_;
+    recursive_print(top_, s);
 }
 
 bool Cards::top_to_bottom()
@@ -84,6 +85,12 @@ void Cards::reverse()
 
 int Cards::recursive_print(std::shared_ptr<Card_data> top, std::ostream &s)
 {
-    s << top->data << endl;
-    return 1;
+    int running_number = 1;
+    if(top->next != nullptr){
+        running_number += recursive_print(top->next,s);
+    }
+    s << running_number << ": "
+         << top->data << endl;
+
+    return running_number;
 }

@@ -51,10 +51,6 @@ int main()
     {
         cout << "remove " << value << endl;
     }
-
-    cout << endl << "print_from_bottom_to_top" << endl;
-    deck.print_from_top_to_bottom(cout);
-
     // Destructor is called automatically
     return EXIT_SUCCESS;
 }
