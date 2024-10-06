@@ -42,7 +42,7 @@ void Cards::print_from_top_to_bottom(std::ostream &s)
     int running_number = 1;
 
     while ( printable_ptr != nullptr ) {
-        s << running_number << ". "
+        s << running_number << ": "
              << printable_ptr->data << endl;
         ++running_number;
         printable_ptr = printable_ptr->next;
