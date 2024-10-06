@@ -181,11 +181,11 @@ int main() {
              }
              cout << "Enter a new phone number: ";
              getline(cin, line);
+             cout << endl;
              if(!is_valid_phone_number(line)){
                  continue;
              }
              iter->second.get()->phone_number = line;
-             cout << endl;
 
         // Quitting
         } else if( command == "Q" or command == "q" ) {
