@@ -105,7 +105,7 @@ int main() {
             continue;
         }
 
-        if(pieces.size() > command.parameter_number + 1){
+        if(pieces.size() != command.parameter_number + 1){
             cout << "Error: wrong number of parameters." << endl;
             continue;
         }
