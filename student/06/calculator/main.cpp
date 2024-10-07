@@ -110,8 +110,10 @@ int main() {
             continue;
         }
 
-        if(command.is_exit)
+        if(command.is_exit){
+            cout << GREETING_AT_END << endl;
             break;
+        }
 
         double val1, val2;
         if(!string_to_double(pieces.at(1),val1) || !string_to_double(pieces.at(2),val2) ){
