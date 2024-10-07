@@ -11,7 +11,7 @@ Queue::Queue(unsigned int cycle)
 void Queue::enqueue(const string &reg)
 {
     if(is_green_){
-        cout << "GREEN: The vehicle " << reg <<" need not stop to wait";
+        cout << "GREEN: The vehicle " << reg <<" need not stop to wait" << endl;
         return;
     }
 
@@ -52,7 +52,7 @@ void Queue::switch_light()
             first_ = car_ptr;
             running_number--;
         }
-        cout << "can go on";
+        cout << "can go on" << endl;
         is_green_ = false;
     }
 }
