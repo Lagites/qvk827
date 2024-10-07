@@ -93,24 +93,24 @@ int main() {
             c = toupper(c);
         }
 
-        Command* command = nullptr;
+        Command command = {};
         for(auto comm : COMMANDS) {
             if(comm.str.compare(command_to_be_executed) == 0) {
-                command = &comm;
+                command = comm;
                 break;
             }
         }
-        if(command == nullptr){
+        if(command.str.empty() ){
             cout << "Error: unknown command." << endl;
             continue;
         }
 
-        if(pieces.size() > command->parameter_number + 1){
+        if(pieces.size() > command.parameter_number + 1){
             cout << "Error: wrong number of parameters." << endl;
             continue;
         }
 
-        if(command->is_exit)
+        if(command.is_exit)
             break;
 
         double val1, val2;
@@ -119,7 +119,7 @@ int main() {
             continue;
         }
 
-        cout << command->action(val1,val2) << endl;
+        cout << command.action(val1,val2) << endl;
 
     }
 }
