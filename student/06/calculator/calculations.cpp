@@ -1,3 +1,4 @@
+#include <cmath>
 // Note that there is no need for "using namespace std",
 // since no C++ standard libraries are used.
 
@@ -18,4 +19,9 @@ double multiplication(double left, double right) {
 
 double division(double left, double right) {
     return left / right;
+}
+
+double power(double left, double right)
+{
+    return pow(left,right);
 }
