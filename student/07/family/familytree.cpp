@@ -20,14 +20,15 @@ void Familytree::addNewPerson(const std::string &id, int height, std::ostream &o
 
 void Familytree::addRelation(const std::string &child, const std::vector<std::string> &parents, std::ostream &output)
 {
-    auto iter = persons.find(child);
-    if(iter != persons.end()){
+    Person* person = getPointer(child);
+    if(person != nullptr){
         int i = 0;
-        for(const string &parent : parents){
-            auto iter2 = persons.find(parent);
-            if(iter2 != persons.end()){
-                iter->second->parents_.assign(i,iter2->second.get());
-                iter2->second->children_.push_back(iter->second.get());
+        for(const string &parentId : parents){
+            Person* parent = getPointer(parentId);
+            if(parent != nullptr){
+                person->parents_.push_back(parent);
+                parent->children_.push_back(person);
+                i++;
             }
         }
     }
@@ -49,32 +50,57 @@ void Familytree::printChildren(Params params, std::ostream &output) const
 {
     string id = params[0];
     IdSet children = {};
-    auto iter = persons.find(id);
-    if(iter == persons.end()){
+    Person* person = getPointer(id);
+    if(person == nullptr){
         printNotFound(id,output);
         return;
     }
     else{
-        for(Person* child : iter->second->children_){
+        for (Person* child : person->children_ )
             children.insert(child->id_);
-        }
     }
     printGroup(id, "children", children, output);
 }
 
 void Familytree::printParents(Params params, std::ostream &output) const
 {
-
+    string id = params[0];
+    IdSet parents = {};
+    Person* person = getPointer(id);
+    if(person == nullptr){
+        printNotFound(id,output);
+        return;
+    }
+    else{
+        for (Person* parent : person->parents_ )
+            parents.insert(parent->id_);
+    }
+    printGroup(id, "parents", parents, output);
 }
 
 void Familytree::printSiblings(Params params, std::ostream &output) const
 {
+    string id = params[0];
+    IdSet siblings = {};
+    Person* person = getPointer(id);
+    if(person == nullptr){
+        printNotFound(id,output);
+        return;
+    }
+    else{
+        for (Person* parent : person->parents_ ){
+            for (Person* sibling : parent->children_)
+                siblings.insert(sibling->id_);
 
+        }
+    }
+    //Remove self from list
+    siblings.erase(id);
+    printGroup(id, "siblings", siblings, output);
 }
 
 void Familytree::printCousins(Params params, std::ostream &output) const
 {
-
 }
 
 void Familytree::printTallestInLineage(Params params, std::ostream &output) const
@@ -99,7 +125,9 @@ void Familytree::printGrandParentsN(Params params, std::ostream &output) const
 
 Person *Familytree::getPointer(const std::string &id) const
 {
-    return persons.find(id)->second.get();
+    if(persons.find(id) != persons.end())
+        return persons.find(id)->second.get();
+    return nullptr;
 }
 
 void Familytree::printNotFound(const std::string &id, std::ostream &output) const
@@ -125,7 +153,7 @@ void Familytree::printGroup(const std::string &id, const std::string &group, con
 
     output << id << " has " << container.size() << " " << group << ":" << endl;
 
-    for(string content : container){
+    for(const string& content : container){
         output << content << endl;
     }
 }
