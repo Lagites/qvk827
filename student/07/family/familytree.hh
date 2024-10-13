@@ -197,20 +197,41 @@ private:
                     const IdSet& container, std::ostream& output) const;
 
     /**
-     * @brief getChildren
+     * @brief printComparison
+     * @param baseId
+     * @param resultId
+     * @param compareParam can be e.g. "shortest", "tallest"
+     * @param height contains the height of the result
+     * @param output
+     * Print the result of length queries.
+     */
+    void printComparison(const std::string &baseId, const std::string &resultId,
+                         const std::string &compareParam, const int &height, std::ostream &output) const;
+
+    /**
+     * @brief getGrandChildren
      * @param person* (pointer to Person object)
      * @param level
      * @return vector all children of the Nth level of the given person.
      */
-    vector<Person*> getChildren(Person* person, int level = 0) const;
+    vector<Person*> getGrandChildren(Person* person, int level) const;
 
     /**
-     * @brief getParents
+     * @brief getGrandParents
      * @param person* (pointer to Person object)
-     * @param generation
+     * @param level
      * @return vector all parents of the Nth level of the given person.
      */
-    vector<Person*> getParents(Person* person, int level = 0) const;
+    vector<Person*> getGrandParents(Person* person, int level) const;
+
+    /**
+     * @brief findChildByHeight
+     * @param person* (pointer to Person object)
+     * @param shortest, if true, find shortest. if false, tallest
+     * @param compareTarget* pointer Person object, current tallest/shortest
+     * @return pointer to tallest/shortest person
+     */
+    Person *findChildByHeight(Person *person, bool shortest, Person *compareTarget) const;
 
     map<string, shared_ptr<Person>> persons;
 };

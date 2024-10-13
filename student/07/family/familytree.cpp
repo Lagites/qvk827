@@ -105,8 +105,8 @@ void Familytree::printCousins(Params params, std::ostream &output) const
         printNotFound(id,output);
         return;
     }
-    for (Person* grandParent : getParents(person, 1) ){
-        for (Person* grandChild : getChildren(grandParent, 1))
+    for (Person* grandParent : getGrandParents(person, 1) ){
+        for (Person* grandChild : getGrandChildren(grandParent, 1))
             //Filter out siblings (relatives with same parents).
             if(person->parents_.at(0)->id_.compare(grandChild->parents_.at(0)->id_) != 0)
                 cousins.insert(grandChild->id_);
@@ -117,12 +117,32 @@ void Familytree::printCousins(Params params, std::ostream &output) const
 
 void Familytree::printTallestInLineage(Params params, std::ostream &output) const
 {
+    string id = params[0];
+    string resultId = params[0];
+    IdSet cousins = {};
+    Person* person = getPointer(id);
+    if(person == nullptr){
+        printNotFound(id,output);
+        return;
+    }
+    Person* tallestPerson = findChildByHeight(person,false,person);
 
+    printComparison(id, tallestPerson->id_, "tallest", tallestPerson->height_, output);
 }
 
 void Familytree::printShortestInLineage(Params params, std::ostream &output) const
 {
+    string id = params[0];
+    string resultId = params[0];
+    IdSet cousins = {};
+    Person* person = getPointer(id);
+    if(person == nullptr){
+        printNotFound(id,output);
+        return;
+    }
+    Person* shortestPerson = findChildByHeight(person,true,person);
 
+    printComparison(id, shortestPerson->id_, "shortest", shortestPerson->height_, output);
 }
 
 void Familytree::printGrandChildrenN(Params params, std::ostream &output) const
@@ -140,7 +160,7 @@ void Familytree::printGrandChildrenN(Params params, std::ostream &output) const
         printLevelError(output);
         return;
     }
-    for (Person* grandChild : getChildren(person, n) )
+    for (Person* grandChild : getGrandChildren(person, n) )
         parents.insert(grandChild->id_);
     for(int i = 0 ; i < n - 1; i ++)
         greats.append("great-");
@@ -162,7 +182,7 @@ void Familytree::printGrandParentsN(Params params, std::ostream &output) const
         printLevelError(output);
         return;
     }
-    for (Person* grandParent : getParents(person, n) )
+    for (Person* grandParent : getGrandParents(person, n) )
         parents.insert(grandParent->id_);
     for(int i = 0 ; i < n - 1; i ++)
         greats.append("great-");
@@ -209,28 +229,49 @@ void Familytree::printGroup(const std::string &id, const std::string &group, con
     }
 }
 
-vector<Person *> Familytree::getChildren(Person *person, int level) const
+void Familytree::printComparison(const std::string &baseId, const std::string &resultId, const std::string &compareParam, const int &height, std::ostream &output) const
+{
+    if(baseId.compare(resultId) == 0)
+        output << "With the height of "<< height << ", " << resultId << " is the " << compareParam << " person in his/her lineage."  << endl;
+    else
+        output << "With the height of "<< height << ", " << resultId << " is the " << compareParam << " person in "<< baseId << "'s lineage."  << endl;
+}
+
+vector<Person *> Familytree::getGrandChildren(Person *person, int level) const
 {
     if(level == 0)
         return person->children_;
     vector<Person *> children = {};
     for(Person* child : person->children_){
-        for(Person* grandChild : getChildren(child, level - 1)){
+        for(Person* grandChild : getGrandChildren(child, level - 1)){
             children.push_back(grandChild);
         }
     }
     return children;
 }
 
-vector<Person *> Familytree::getParents(Person *person, int level) const
+vector<Person *> Familytree::getGrandParents(Person *person, int level) const
 {
     if(level == 0)
         return person->parents_;
     vector<Person *> parents = {};
     for(Person* parent : person->parents_){
-        for(Person* grandParent : getParents(parent, level - 1)){
+        for(Person* grandParent : getGrandParents(parent, level - 1)){
             parents.push_back(grandParent);
         }
     }
     return parents;
+}
+
+Person *Familytree::findChildByHeight(Person *person, bool shortest, Person *compareTarget) const
+{
+    for(Person* child : person->children_){
+        if(shortest && child->height_ < compareTarget->height_)
+            compareTarget = child;
+        if(!shortest && child->height_ > compareTarget->height_)
+            compareTarget= child;
+        compareTarget = findChildByHeight(child, shortest, compareTarget);
+
+    }
+    return compareTarget;
 }
