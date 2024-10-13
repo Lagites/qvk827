@@ -106,10 +106,16 @@ void Familytree::printCousins(Params params, std::ostream &output) const
         return;
     }
     for (Person* grandParent : getGrandParents(person, 1) ){
-        for (Person* grandChild : getGrandChildren(grandParent, 1))
-            //Filter out siblings (relatives with same parents).
-            if(person->parents_.at(0)->id_.compare(grandChild->parents_.at(0)->id_) != 0)
-                cousins.insert(grandChild->id_);
+        for (Person* grandChild : getGrandChildren(grandParent, 1)){
+            cousins.insert(grandChild->id_);
+        }
+    }
+
+    //Filter out self and siblings (relatives with same parents).
+    for (Person* parent : person->parents_ ){
+        for (Person* child : parent->children_ ){
+            cousins.erase(child->id_);
+        }
     }
 
     printGroup(id, "cousins", cousins, output);
