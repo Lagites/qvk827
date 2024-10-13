@@ -188,6 +188,22 @@ private:
     void printGroup(const std::string& id, const std::string& group,
                     const IdSet& container, std::ostream& output) const;
 
+    /**
+     * @brief getChildren
+     * @param person* (pointer to Person object)
+     * @param generation
+     * @return vector all children of the Nth generation of the given person.
+     */
+    vector<Person*> getChildren(Person* person, int generation = 0) const;
+
+    /**
+     * @brief getParents
+     * @param person* (pointer to Person object)
+     * @param generation
+     * @return vector all parents of the Nth generation of the given person.
+     */
+    vector<Person*> getParents(Person* person, int generation = 0) const;
+
     map<string, shared_ptr<Person>> persons;
 };
 
