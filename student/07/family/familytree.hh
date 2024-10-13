@@ -170,6 +170,14 @@ private:
     void printNotFound(const std::string& id, std::ostream& output) const;
 
     /**
+     * @brief printLevelError
+     * @param id
+     * @param output
+     * Print the error message when level for grandparents/children is less than 1.
+     */
+    void printLevelError(std::ostream& output) const;
+
+    /**
      * @brief vectorToIdSet
      * @param container
      * @return set of ids of those persons included in the given container
@@ -191,18 +199,18 @@ private:
     /**
      * @brief getChildren
      * @param person* (pointer to Person object)
-     * @param generation
-     * @return vector all children of the Nth generation of the given person.
+     * @param level
+     * @return vector all children of the Nth level of the given person.
      */
-    vector<Person*> getChildren(Person* person, int generation = 0) const;
+    vector<Person*> getChildren(Person* person, int level = 0) const;
 
     /**
      * @brief getParents
      * @param person* (pointer to Person object)
      * @param generation
-     * @return vector all parents of the Nth generation of the given person.
+     * @return vector all parents of the Nth level of the given person.
      */
-    vector<Person*> getParents(Person* person, int generation = 0) const;
+    vector<Person*> getParents(Person* person, int level = 0) const;
 
     map<string, shared_ptr<Person>> persons;
 };

@@ -127,12 +127,46 @@ void Familytree::printShortestInLineage(Params params, std::ostream &output) con
 
 void Familytree::printGrandChildrenN(Params params, std::ostream &output) const
 {
-
+    string id = params[0];
+    int n = stoi(params.at(1));
+    string greats = "";
+    IdSet parents = {};
+    Person* person = getPointer(id);
+    if(person == nullptr){
+        printNotFound(id,output);
+        return;
+    }
+    if(n < 1){
+        printLevelError(output);
+        return;
+    }
+    for (Person* grandChild : getChildren(person, n) )
+        parents.insert(grandChild->id_);
+    for(int i = 0 ; i < n - 1; i ++)
+        greats.append("great-");
+    printGroup(id, greats + "grandchildren", parents, output);
 }
 
 void Familytree::printGrandParentsN(Params params, std::ostream &output) const
 {
-
+    string id = params[0];
+    int n = stoi(params.at(1));
+    string greats = "";
+    IdSet parents = {};
+    Person* person = getPointer(id);
+    if(person == nullptr){
+        printNotFound(id,output);
+        return;
+    }
+    if(n < 1){
+        printLevelError(output);
+        return;
+    }
+    for (Person* grandParent : getParents(person, n) )
+        parents.insert(grandParent->id_);
+    for(int i = 0 ; i < n - 1; i ++)
+        greats.append("great-");
+    printGroup(id, greats + "grandparents", parents, output);
 }
 
 Person *Familytree::getPointer(const std::string &id) const
@@ -145,6 +179,11 @@ Person *Familytree::getPointer(const std::string &id) const
 void Familytree::printNotFound(const std::string &id, std::ostream &output) const
 {
    output << "Error. " << id <<" not found." << endl;
+}
+
+void Familytree::printLevelError(std::ostream &output) const
+{
+   output << "Error. Level can't be less than 1." << endl;
 }
 
 IdSet Familytree::vectorToIdSet(const std::vector<Person *> &container) const
@@ -170,26 +209,26 @@ void Familytree::printGroup(const std::string &id, const std::string &group, con
     }
 }
 
-vector<Person *> Familytree::getChildren(Person *person, int generation) const
+vector<Person *> Familytree::getChildren(Person *person, int level) const
 {
-    if(generation == 0)
+    if(level == 0)
         return person->children_;
     vector<Person *> children = {};
     for(Person* child : person->children_){
-        for(Person* grandChild : getChildren(child, generation - 1)){
+        for(Person* grandChild : getChildren(child, level - 1)){
             children.push_back(grandChild);
         }
     }
     return children;
 }
 
-vector<Person *> Familytree::getParents(Person *person, int generation) const
+vector<Person *> Familytree::getParents(Person *person, int level) const
 {
-    if(generation == 0)
+    if(level == 0)
         return person->parents_;
     vector<Person *> parents = {};
     for(Person* parent : person->parents_){
-        for(Person* grandParent : getParents(parent, generation - 1)){
+        for(Person* grandParent : getParents(parent, level - 1)){
             parents.push_back(grandParent);
         }
     }
