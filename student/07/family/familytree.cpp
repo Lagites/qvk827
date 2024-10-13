@@ -12,7 +12,7 @@ void Familytree::addNewPerson(const std::string &id, int height, std::ostream &o
             = make_shared<Person>(Person{id,height, {}, {}});
 
     if(persons.find(id) != persons.end()){
-        output << "Error. " << id <<" already added." << endl;
+        output << "Error. Person already added." << endl;
         return;
     }
     persons[new_ptr->id_] = new_ptr;
@@ -218,7 +218,7 @@ IdSet Familytree::vectorToIdSet(const std::vector<Person *> &container) const
 void Familytree::printGroup(const std::string &id, const std::string &group, const IdSet &container, std::ostream &output) const
 {
     if(container.size() == 0){
-        output << id << " has no " << group << endl;
+        output << id << " has no " << group << "." << endl;
         return;
     }
 
