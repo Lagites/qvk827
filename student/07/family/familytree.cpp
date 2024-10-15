@@ -255,13 +255,13 @@ void Familytree::printGroup(const std::string &id, const std::string &group,
 void Familytree::printComparison(const std::string &baseId, const std::string &resultId,
                 const std::string &compareParam, const int &height, std::ostream &output) const
 {
-    //if base person is the result, change resultname to his/her
-    std::string personStr = baseId;
     if(baseId.compare(resultId) == 0)
-        personStr = "his/her";
+        output << "With the height of "<< height << ", " << resultId << " is the "
+            << compareParam << " person in his/her lineage."  << std::endl;
+    else
+        output << "With the height of "<< height << ", " << resultId << " is the "
+            << compareParam << " person in "<< baseId << "'s lineage."  << std::endl;
 
-    output << "With the height of "<< height << ", " << resultId << " is the "
-            << compareParam << " person in "<< personStr << "'s lineage."  << std::endl;
 }
 
 std::vector<Person *> Familytree::getGrandChildren(Person *person, int level) const
