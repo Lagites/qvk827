@@ -8,11 +8,11 @@ Familytree::Familytree()
 
 void Familytree::addNewPerson(const std::string &id, int height, std::ostream &output)
 {
-    shared_ptr<Person> new_ptr
-            = make_shared<Person>(Person{id,height, {}, {}});
+    std::shared_ptr<Person> new_ptr
+            = std::make_shared<Person>(Person{id,height, {}, {}});
 
     if(persons.find(id) != persons.end()){
-        output << "Error. Person already added." << endl;
+        output << "Error. Person already added." << std::endl;
         return;
     }
     persons[new_ptr->id_] = new_ptr;
@@ -23,7 +23,8 @@ void Familytree::addRelation(const std::string &child, const std::vector<std::st
     Person* person = getPointer(child);
     if(person != nullptr){
         int i = 0;
-        for(const string &parentId : parents){
+        //Loops parents-vector and parents to person and person as a child to each parent
+        for(const std::string &parentId : parents){
             Person* parent = getPointer(parentId);
             if(parent != nullptr){
                 person->parents_.push_back(parent);
@@ -41,14 +42,14 @@ void Familytree::printPersons(Params, std::ostream &output) const
 {
     auto iter = persons.begin();
     while(iter != persons.end()){
-        output << iter->second->id_ << ", " << iter->second->height_ << endl;
+        output << iter->second->id_ << ", " << iter->second->height_ << std::endl;
         iter++;
     }
 }
 
 void Familytree::printChildren(Params params, std::ostream &output) const
 {
-    string id = params[0];
+    std::string id = params[0];
     IdSet children = {};
     Person* person = getPointer(id);
     if(person == nullptr){
@@ -56,6 +57,7 @@ void Familytree::printChildren(Params params, std::ostream &output) const
         return;
     }
 
+    //collect ids of each child
     for (Person* child : person->children_ )
         children.insert(child->id_);
 
@@ -64,28 +66,34 @@ void Familytree::printChildren(Params params, std::ostream &output) const
 
 void Familytree::printParents(Params params, std::ostream &output) const
 {
-    string id = params[0];
+    std::string id = params[0];
     IdSet parents = {};
     Person* person = getPointer(id);
     if(person == nullptr){
         printNotFound(id,output);
         return;
     }
+
+    //collect ids of each parent
     for (Person* parent : person->parents_ )
         parents.insert(parent->id_);
+
     printGroup(id, "parents", parents, output);
 }
 
 void Familytree::printSiblings(Params params, std::ostream &output) const
 {
-    string id = params[0];
+    std::string id = params[0];
     IdSet siblings = {};
     Person* person = getPointer(id);
     if(person == nullptr){
         printNotFound(id,output);
         return;
     }
+
+    //loop through each parent's children
     for (Person* parent : person->parents_ ){
+        //collect ids of each sibling
         for (Person* sibling : parent->children_)
             siblings.insert(sibling->id_);
 
@@ -98,14 +106,17 @@ void Familytree::printSiblings(Params params, std::ostream &output) const
 
 void Familytree::printCousins(Params params, std::ostream &output) const
 {
-    string id = params[0];
+    std::string id = params[0];
     IdSet cousins = {};
     Person* person = getPointer(id);
     if(person == nullptr){
         printNotFound(id,output);
         return;
     }
+
+    //loop through each grandparench's grandchildren to find cousins
     for (Person* grandParent : getGrandParents(person, 1) ){
+        //collect ids of each child
         for (Person* grandChild : getGrandChildren(grandParent, 1)){
             cousins.insert(grandChild->id_);
         }
@@ -123,8 +134,8 @@ void Familytree::printCousins(Params params, std::ostream &output) const
 
 void Familytree::printTallestInLineage(Params params, std::ostream &output) const
 {
-    string id = params[0];
-    string resultId = params[0];
+    std::string id = params[0];
+    std::string resultId = params[0];
     IdSet cousins = {};
     Person* person = getPointer(id);
     if(person == nullptr){
@@ -138,8 +149,8 @@ void Familytree::printTallestInLineage(Params params, std::ostream &output) cons
 
 void Familytree::printShortestInLineage(Params params, std::ostream &output) const
 {
-    string id = params[0];
-    string resultId = params[0];
+    std::string id = params[0];
+    std::string resultId = params[0];
     IdSet cousins = {};
     Person* person = getPointer(id);
     if(person == nullptr){
@@ -153,9 +164,9 @@ void Familytree::printShortestInLineage(Params params, std::ostream &output) con
 
 void Familytree::printGrandChildrenN(Params params, std::ostream &output) const
 {
-    string id = params[0];
+    std::string id = params[0];
     int n = stoi(params.at(1));
-    string greats = "";
+    std::string greats = "";
     IdSet parents = {};
     Person* person = getPointer(id);
     if(person == nullptr){
@@ -166,8 +177,11 @@ void Familytree::printGrandChildrenN(Params params, std::ostream &output) const
         printLevelError(output);
         return;
     }
+
+    //loop through each grandchildren in Nth generation and collect ids
     for (Person* grandChild : getGrandChildren(person, n) )
         parents.insert(grandChild->id_);
+    //add great- to print function for each generation
     for(int i = 0 ; i < n - 1; i ++)
         greats.append("great-");
     printGroup(id, greats + "grandchildren", parents, output);
@@ -175,9 +189,9 @@ void Familytree::printGrandChildrenN(Params params, std::ostream &output) const
 
 void Familytree::printGrandParentsN(Params params, std::ostream &output) const
 {
-    string id = params[0];
+    std::string id = params[0];
     int n = stoi(params.at(1));
-    string greats = "";
+    std::string greats = "";
     IdSet parents = {};
     Person* person = getPointer(id);
     if(person == nullptr){
@@ -188,8 +202,10 @@ void Familytree::printGrandParentsN(Params params, std::ostream &output) const
         printLevelError(output);
         return;
     }
+    //loop through each grandparent in Nth generation and collect ids
     for (Person* grandParent : getGrandParents(person, n) )
         parents.insert(grandParent->id_);
+    //add great- to print function for each generation
     for(int i = 0 ; i < n - 1; i ++)
         greats.append("great-");
     printGroup(id, greats + "grandparents", parents, output);
@@ -204,12 +220,12 @@ Person *Familytree::getPointer(const std::string &id) const
 
 void Familytree::printNotFound(const std::string &id, std::ostream &output) const
 {
-   output << "Error. " << id <<" not found." << endl;
+   output << "Error. " << id <<" not found." << std::endl;
 }
 
 void Familytree::printLevelError(std::ostream &output) const
 {
-   output << "Error. Level can't be less than 1." << endl;
+   output << "Error. Level can't be less than 1." << std::endl;
 }
 
 IdSet Familytree::vectorToIdSet(const std::vector<Person *> &container) const
@@ -221,33 +237,39 @@ IdSet Familytree::vectorToIdSet(const std::vector<Person *> &container) const
     return set;
 }
 
-void Familytree::printGroup(const std::string &id, const std::string &group, const IdSet &container, std::ostream &output) const
+void Familytree::printGroup(const std::string &id, const std::string &group,
+                const IdSet &container, std::ostream &output) const
 {
     if(container.size() == 0){
-        output << id << " has no " << group << "." << endl;
+        output << id << " has no " << group << "." << std::endl;
         return;
     }
 
-    output << id << " has " << container.size() << " " << group << ":" << endl;
+    output << id << " has " << container.size() << " " << group << ":" << std::endl;
 
-    for(const string& content : container){
-        output << content << endl;
+    for(const std::string& content : container){
+        output << content << std::endl;
     }
 }
 
-void Familytree::printComparison(const std::string &baseId, const std::string &resultId, const std::string &compareParam, const int &height, std::ostream &output) const
+void Familytree::printComparison(const std::string &baseId, const std::string &resultId,
+                const std::string &compareParam, const int &height, std::ostream &output) const
 {
+    //if base person is the result, change resultname to his/her
+    std::string personStr = baseId;
     if(baseId.compare(resultId) == 0)
-        output << "With the height of "<< height << ", " << resultId << " is the " << compareParam << " person in his/her lineage."  << endl;
-    else
-        output << "With the height of "<< height << ", " << resultId << " is the " << compareParam << " person in "<< baseId << "'s lineage."  << endl;
+        personStr = "his/her";
+
+    output << "With the height of "<< height << ", " << resultId << " is the "
+            << compareParam << " person in "<< personStr << "'s lineage."  << std::endl;
 }
 
-vector<Person *> Familytree::getGrandChildren(Person *person, int level) const
+std::vector<Person *> Familytree::getGrandChildren(Person *person, int level) const
 {
     if(level == 0)
         return person->children_;
-    vector<Person *> children = {};
+    std::vector<Person *> children = {};
+    //loop function recursively to get to Nth level children
     for(Person* child : person->children_){
         for(Person* grandChild : getGrandChildren(child, level - 1)){
             children.push_back(grandChild);
@@ -256,11 +278,12 @@ vector<Person *> Familytree::getGrandChildren(Person *person, int level) const
     return children;
 }
 
-vector<Person *> Familytree::getGrandParents(Person *person, int level) const
+std::vector<Person *> Familytree::getGrandParents(Person *person, int level) const
 {
     if(level == 0)
         return person->parents_;
-    vector<Person *> parents = {};
+    std::vector<Person *> parents = {};
+    //loop function recursively to get to Nth level parents
     for(Person* parent : person->parents_){
         for(Person* grandParent : getGrandParents(parent, level - 1)){
             parents.push_back(grandParent);
@@ -271,6 +294,8 @@ vector<Person *> Familytree::getGrandParents(Person *person, int level) const
 
 Person *Familytree::findChildByHeight(Person *person, bool shortest, Person *compareTarget) const
 {
+    //loop function recursively to find the shortest/tallest child,
+    // store current shortest/tallest to compareTarget for each recursion
     for(Person* child : person->children_){
         if(shortest && child->height_ < compareTarget->height_)
             compareTarget = child;

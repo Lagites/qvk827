@@ -21,7 +21,24 @@
 #include <memory>
 #include <map>
 
-using namespace std;
+/* Familytree
+ *
+ * Desc:
+ * This class handles input data concerning family tree data.
+ * User can add new family members with person's name as id, height data
+ * and names of their parents.
+ *
+ * Program author
+ * Name: Jukka Välimäki
+ * Student number: 153036662
+ * UserID: qvk827)
+ * E-Mail: jukka.valimaki@tuni.fi
+ *
+ * Family tree data is stored in a single map. Person's parent and children
+ * are stored in Person data structure as pointers to their memory addresses.
+ * all queries are implemented using these pointers.
+ *
+ * */
 
 using Params = const std::vector<std::string>&;
 
@@ -148,12 +165,6 @@ public:
     void printGrandParentsN(Params params, std::ostream& output) const;
 
 private:
-    /* The following functions are meant to make project easier.
-     * You can implement them if you want and/or create your own.
-     * Anyway it would be a good idea to implement more functions
-     * to make things easier and to avoid "copy-paste-coding".
-     */
-
     /**
      * @brief getPointer
      * @param id
@@ -214,7 +225,7 @@ private:
      * @param level
      * @return vector all children of the Nth level of the given person.
      */
-    vector<Person*> getGrandChildren(Person* person, int level) const;
+    std::vector<Person*> getGrandChildren(Person* person, int level) const;
 
     /**
      * @brief getGrandParents
@@ -222,7 +233,7 @@ private:
      * @param level
      * @return vector all parents of the Nth level of the given person.
      */
-    vector<Person*> getGrandParents(Person* person, int level) const;
+    std::vector<Person*> getGrandParents(Person* person, int level) const;
 
     /**
      * @brief findChildByHeight
@@ -233,7 +244,7 @@ private:
      */
     Person *findChildByHeight(Person *person, bool shortest, Person *compareTarget) const;
 
-    map<string, shared_ptr<Person>> persons;
+    std::map<std::string, std::shared_ptr<Person>> persons;
 };
 
 #endif // FAMILYTREE_HH
